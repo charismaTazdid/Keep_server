@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(uuid())
+  fullName          String
+  phoneNumber       String    @unique
+  password          String
+  isProfileComplete Boolean   @default(false)
+  Profile           Profile[]
+  Post              Post[]
+}
+
+model Profile {
+  id                    String  @id @default(uuid())
+  addreess              String? @db.Text
+  email                 String?
+  bloodGroup            String?
+  fathersName           String?
+  mothersName           String?
+  diseaseHistory        String?
+  geneticDiseaseHistory String?
+  user                  User    @relation(fields: [userId], references: [id])
+  userId                String  @unique
+}
+
+model Post {
+  id           String   @id @default(uuid())
+  createdAt    DateTime @default(now())
+  fileName     String
+  prescription Bytes // Image
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+}
